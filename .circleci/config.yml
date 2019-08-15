@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python
+      - image: docker:19.03.1
     steps:
       - run: pip install --user docker
       - checkout
