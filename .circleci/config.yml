@@ -4,7 +4,8 @@ jobs:
     docker:
       - image: docker:19.03.1
     steps:
-      - run: pip install --user docker
+      - run: apk add python3
+      - run: pip3 install --user docker
       - checkout
       - run: docker ps
       - run: ./build.py -n b1zzu fedora:31
