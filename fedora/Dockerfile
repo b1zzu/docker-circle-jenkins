@@ -1,5 +1,5 @@
-ARG VERSION
-FROM fedora:${VERSION}
+ARG FEDORA_VERSION
+FROM fedora:${FEDORA_VERSION}
 
 RUN dnf -y install \
         wget \
