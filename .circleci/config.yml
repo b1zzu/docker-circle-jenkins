@@ -2,11 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:19.03.1
+      - image: circleci/python
     steps:
-      - run: apk add python3
-      - run: pip3 install --user docker
       - checkout
+      - setup_remote_docker
+      - run: pip3 install --user docker
       - run: docker ps
       - run: ./build.py -n b1zzu fedora:31
       - run: ./build.py -n b1zzu fedora:31 openjdk8
