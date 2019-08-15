@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: circleci/python
     steps:
+      - run: pip install docker
       - checkout
       - run: ./build.py -n b1zzu fedora:31
       - run: ./build.py -n b1zzu fedora:31 openjdk8
