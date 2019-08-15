@@ -10,7 +10,7 @@ jobs:
       - run: |
           alias build="./build.py -n b1zzu"
           if [ ! -z ${CIRCLE_TAG} ]; then
-            alias build=""./build.py -n b1zzu -v ${CIRCLE_TAG} -p"
+            alias build="./build.py -n b1zzu -v ${CIRCLE_TAG} -p"
           fi
       - run: docker ps
       - run: build fedora:31
