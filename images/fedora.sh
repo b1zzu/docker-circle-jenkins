@@ -3,8 +3,11 @@
 set -e
 set -x
 
+VERSION=${VERSION:-alpha}
+NAMESPACE=${NAMESPACE:-}
+
 FEDORA_VERSION=${1:-31}
-FEDORA_IMAGE=b1zzu/fedora:${FEDORA_VERSION}
+FEDORA_IMAGE=${NAMESPACE}fedora:${VERSION}-fedora${FEDORA_VERSION}
 
 docker build \
     --build-arg VERSION=${FEDORA_VERSION} \

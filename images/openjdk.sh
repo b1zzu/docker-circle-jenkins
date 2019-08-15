@@ -3,6 +3,9 @@
 set -e
 set -x
 
+VERSION=${VERSION:-alpha}
+NAMESPACE=${NAMESPACE:-}
+
 OPENJDK_VERSION=${1:-8}
 FEDORA_VERSION=${2:-31}
 
@@ -15,7 +18,7 @@ fi
 
 FEDORA_IMAGE=$(./images/fedora.sh ${FEDORA_VERSION})
 
-OPENJDK_IMAGE=b1zzu/openjdk:fedora${FEDORA_VERSION}-${OPENJDK_VERSION}
+OPENJDK_IMAGE=${NAMESPACE}openjdk:${VERSION}-fedora${FEDORA_VERSION}-openjdk${OPENJDK_VERSION}
 
 docker build \
     --build-arg FROM=${FEDORA_IMAGE} \
