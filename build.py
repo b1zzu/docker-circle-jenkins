@@ -9,9 +9,11 @@ logging.basicConfig(level=logging.INFO)
 parser = argparse.ArgumentParser(
     description='Build docker image combining multiple templates')
 parser.add_argument(
+    '-n',
     '--namespace',
     help='namespace for the docker image')
 parser.add_argument(
+    '-v',
     '--version',
     default='alpha',
     help='version to add to the tag for the image')
