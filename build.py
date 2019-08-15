@@ -22,6 +22,12 @@ parser.add_argument(
     metavar='TEMPLATE',
     nargs='+',
     help='a list of templates to combine in the same order')
+parser.add_argument(
+    '-p',
+    '--push',
+    action='store_true',
+    help='push image after building it'
+)
 args = parser.parse_args()
 
 client = docker.from_env()
@@ -57,3 +63,8 @@ logging.info(' tagging \'{}\''.format(tag))
 image.tag(tag)
 
 logging.info(' successfully builded \'{}\' '.format(tag))
+
+if args.push:
+    logging.info(' pushing image')
+    client.images.push(tag)
+    logging.info(' successfully pushed')
