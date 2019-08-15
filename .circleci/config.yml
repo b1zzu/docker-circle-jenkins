@@ -6,6 +6,7 @@ jobs:
     steps:
       - run: pip install --user docker
       - checkout
+      - run: docker ps
       - run: ./build.py -n b1zzu fedora:31
       - run: ./build.py -n b1zzu fedora:31 openjdk8
       - run: ./build.py -n b1zzu fedora:31 openjdk8 gradle:5.6
