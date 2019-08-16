@@ -28,5 +28,3 @@ python:
         - "31"
     version: "3.7.4"
     template: python3
-gibs:
-  _: 
