@@ -4,7 +4,6 @@ import argparse
 import logging
 import subprocess
 import uuid
-import os
 
 versions = {
     'fedora': {
@@ -33,12 +32,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     '-n',
     '--namespace',
-    default=os.getenv('BUILD_NAMESPACE'),
+    default=None,
     help='namespace for the docker image')
 parser.add_argument(
     '-v',
     '--version',
-    default=os.getenv('BUILD_VERSION', 'alpha'),
+    default='alpha',
     help='version to add to the tag for the image')
 parser.add_argument(
     'template',
@@ -49,7 +48,7 @@ parser.add_argument(
     '-p',
     '--push',
     action='store_true',
-    default=os.getenv('BUILD_PUSH') == 'true',
+    default=False,
     help='push image after building it'
 )
 args = parser.parse_args()
