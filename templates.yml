@@ -1,0 +1,23 @@
+fedora:
+  "31":
+    version: "31"
+openjdk:
+  "8":
+    from:
+      fedora:
+        - "31"
+      node:
+        - "10"
+    template: openjdk8
+gradle:
+  "4":
+    from:
+      openjdk:
+        - "8"
+    version: "4.10.3"
+node:
+  "10":
+    from:
+      fedora:
+        - "31"
+    version: "10.16.2"

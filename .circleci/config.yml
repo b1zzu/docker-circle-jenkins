@@ -7,11 +7,10 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-      - run: ./cibuild.sh fedora:31
-      - run: ./cibuild.sh fedora:31 openjdk8
-      - run: ./cibuild.sh fedora:31 openjdk8 gradle:4
-      - run: ./cibuild.sh fedora:31 openjdk8 gradle:4 node:10
-      - run: ./cibuild.sh fedora:31 node:10
+      - run: ./cibuild.sh fedora 31
+      - run: ./cibuild.sh node 10
+      - run: ./cibuild.sh openjdk 8
+      - run: ./cibuild.sh gradle 4
 workflows:
   version: 2
   build:
