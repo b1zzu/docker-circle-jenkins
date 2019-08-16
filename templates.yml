@@ -26,5 +26,13 @@ python:
     from:
       fedora:
         - "31"
+      docker:
+        - "18"
     version: "3.7.4"
     template: python3
+docker:
+  "18":
+    from:
+      fedora:
+        - "31"
+    version: "18.09.8"
