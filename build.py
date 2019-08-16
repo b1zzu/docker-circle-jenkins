@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 
 import argparse
-import docker
 import logging
+import subprocess
+import uuid
+
+
+def exec(*args):
+    cmd = ' '.join(args)
+    logging.info(' execute \'{}\''.format(cmd))
+    subprocess.run(cmd, shell=True, check=True)
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,8 +38,6 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-client = docker.from_env()
-
 image = None
 name = None
 tag = []
@@ -40,17 +46,20 @@ for template in args.template:
     if len(template.split(':')) != 1:
         (template, version) = template.split(':')
 
-    from_image = image.id if image is not None else ''
+    from_image = image or ''
 
     logging.info(' building \'{}\' with version \'{}\' from \'{}\''.format(
         template, version, from_image))
 
-    (image, _) = client.images.build(
-        path=template,
-        buildargs={
-            'FROM_IMAGE': from_image,
-            template.upper() + '_VERSION': version
-        })
+    image = str(uuid.uuid4())
+    exec('docker', 'build',
+         '--build-arg', 'FROM_IMAGE={}'.format(from_image),
+         '--build-arg', '{}_VERSION={}'.format(template.upper(), version),
+         '--tag', image,
+         './{}'.format(template))
+
+    if from_image != '':
+        exec('docker', 'rmi', from_image)
 
     name = template
     tag.append('{}{}'.format(template, version or ''))
@@ -60,11 +69,12 @@ tag = '{}{}:{}-{}'.format(namespace, name, args.version, '-'.join(tag))
 
 logging.info(' tagging \'{}\''.format(tag))
 
-image.tag(tag)
+exec('docker', 'tag', image, tag)
+exec('docker', 'rmi', image)
 
 logging.info(' successfully builded \'{}\' '.format(tag))
 
 if args.push:
     logging.info(' pushing image')
-    client.images.push(tag)
+    exec('docker', 'push', tag)
     logging.info(' successfully pushed')
