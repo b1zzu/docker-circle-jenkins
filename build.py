@@ -6,7 +6,7 @@ import subprocess
 import uuid
 import yaml
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 
 
 def parser():
@@ -45,15 +45,15 @@ arguments = parser()
 
 def exec(*args):
     c = ' '.join(args)
-    logging.info(' execute \'{}\''.format(c))
+    logging.debug('execute: %s', c)
     subprocess.run(c, shell=True, check=True)
 
 
 def templates():
-    logging.info(' load templates from ./templates.yml')
+    logging.debug('load templates from ./templates.yml')
     f = open('./templates.yml', 'r')
     t = yaml.load(f.read(), Loader=yaml.Loader)
-    logging.info(' founded {} templates'.format(len(t)))
+    logging.debug('founded %s templates', len(t))
     return t
 
 
@@ -74,20 +74,19 @@ def push_image(image):
 
 def get_info(template, variant):
     if template not in templates:
-        logging.error(' the template {} does not exists'.format(template))
+        logging.error('the template %s does not exists', template)
         exit(1)
 
     if variant not in templates[template]:
-        logging.error(
-            ' the variant {} does not exists in the template {}'.format(variant, template))
+        logging.error('the variant %s %s does not exists', template, variant)
         exit(1)
 
     return templates[template][variant]
 
 
 def build_variant_from(template, variant, info, from_image=''):
-    logging.info(' start building variant {} {} from {}'.format(
-        template, variant, from_image))
+    logging.debug('building variant %s %s from %s',
+                  template, variant, from_image)
 
     name = template
     template = info.get('template', template)
@@ -103,8 +102,15 @@ def build_variant_from(template, variant, info, from_image=''):
     return image
 
 
-def build_variant(template, variant):
-    logging.info(' start building variant {} {}'.format(template, variant))
+def build_variant(template, variant, parents=[]):
+    logging.debug('start building variant %s %s', template, variant)
+
+    logging.debug(parents)
+    if (template, variant) in parents:
+        logging.warning('skip recursion of variant %s %s', template, variant)
+        return {}
+
+    parents.append((template, variant))
 
     info = get_info(template, variant)
 
@@ -114,7 +120,8 @@ def build_variant(template, variant):
             for from_variant in from_variants:
                 from_images = build_variant(
                     from_template,
-                    from_variant)
+                    from_variant,
+                    parents.copy())
 
                 for from_tag, from_image in from_images.items():
                     image = build_variant_from(
@@ -147,8 +154,8 @@ for tag, image in images.items():
     tag = '{}{}:{}-{}'.format(namespace, template, version, tag)
     tag_image(image, tag)
     delete_image(image)
-    logging.info(' built image {}'.format(tag))
+    logging.info('built image %s', tag)
 
     if arguments.push:
         push_image(tag)
-        logging.info(' successfully pushed image {}'.format(tag))
+        logging.info('pushed image %s', tag)
