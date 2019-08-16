@@ -6,6 +6,19 @@ import subprocess
 import uuid
 import os
 
+versions = {
+    'fedora': {
+        '31': '31',
+    },
+    'openjdk8': {},
+    'node': {
+        '10': '10.16.2',
+    },
+    'gradle': {
+        '4': '4.10.3',
+    },
+}
+
 
 def exec(*args):
     cmd = ' '.join(args)
@@ -49,6 +62,15 @@ for template in args.template:
     if len(template.split(':')) != 1:
         (template, version) = template.split(':')
 
+    if versions.get(template) is None:
+        logging.error(' invalid template \'{}\''.format(template))
+        exit(1)
+
+    if version is not None and versions[template].get(version) is None:
+        logging.error(
+            ' invalid version \'{}\' for template \'{}\''.format(version, template))
+        exit(1)
+
     from_image = image or ''
 
     logging.info(' building \'{}\' with version \'{}\' from \'{}\''.format(
@@ -57,7 +79,8 @@ for template in args.template:
     image = str(uuid.uuid4())
     exec('docker', 'build',
          '--build-arg', 'FROM_IMAGE={}'.format(from_image),
-         '--build-arg', '{}_VERSION={}'.format(template.upper(), version),
+         '--build-arg', '{}_VERSION={}'.format(
+             template.upper(), versions[template][version] if version is not None else ''),
          '--tag', image,
          './{}'.format(template))
 
