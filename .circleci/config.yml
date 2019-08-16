@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: b1zzu/python:alpha-fedora31-python3
+      - image: b1zzu/python:alpha-fedora31-docker18-python3
     steps:
       - checkout
       - setup_remote_docker
