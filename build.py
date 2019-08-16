@@ -72,6 +72,12 @@ def push_image(image):
     exec('docker', 'push', image)
 
 
+def push_images(images):
+    for image in images:
+        push_image(image)
+        logging.info('pushed image %s', image)
+
+
 def get_info(template, variant):
     if template not in templates:
         logging.error('the template %s does not exists', template)
@@ -140,22 +146,30 @@ def build_variant(template, variant, parents=[]):
     return images
 
 
-template = arguments.template
-
-variant = arguments.variant
-
 namespace = arguments.namespace
 namespace = '{}/'.format(namespace) if namespace is not None else ''
 
 version = arguments.version
 
-images = build_variant(template, variant)
-for tag, image in images.items():
-    tag = '{}{}:{}-{}'.format(namespace, template, version, tag)
-    tag_image(image, tag)
-    delete_image(image)
-    logging.info('built image %s', tag)
 
-    if arguments.push:
-        push_image(tag)
-        logging.info('pushed image %s', tag)
+def build_image(template, variant):
+    images = []
+    for tag, image in build_variant(template, variant).items():
+        tag = '{}{}:{}-{}'.format(namespace, template, version, tag)
+        tag_image(image, tag)
+        delete_image(image)
+        images.append(tag)
+        logging.info('built image %s', tag)
+    return images
+
+
+template = arguments.template
+variant = arguments.variant
+
+images = build_image(template, variant)
+if arguments.push:
+    push_image(images)
+
+logging.info('built %s images:', len(images))
+for image in images:
+    logging.info('  - %s', image)
