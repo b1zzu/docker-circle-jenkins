@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python
+      - image: b1zzu/python:alpha-fedora31-python3
     steps:
       - checkout
       - setup_remote_docker
