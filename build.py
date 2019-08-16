@@ -4,6 +4,7 @@ import argparse
 import logging
 import subprocess
 import uuid
+import os
 
 
 def exec(*args):
@@ -19,11 +20,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     '-n',
     '--namespace',
+    default=os.getenv('BUILD_NAMESPACE'),
     help='namespace for the docker image')
 parser.add_argument(
     '-v',
     '--version',
-    default='alpha',
+    default=os.getenv('BUILD_VERSION', 'alpha'),
     help='version to add to the tag for the image')
 parser.add_argument(
     'template',
@@ -34,6 +36,7 @@ parser.add_argument(
     '-p',
     '--push',
     action='store_true',
+    default=os.getenv('BUILD_PUSH') == 'true',
     help='push image after building it'
 )
 args = parser.parse_args()
