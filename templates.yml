@@ -21,3 +21,12 @@ node:
       fedora:
         - "31"
     version: "10.16.2"
+python:
+  "3":
+    from:
+      fedora:
+        - "31"
+    version: "3.7.4"
+    template: python3
+gibs:
+  _: 

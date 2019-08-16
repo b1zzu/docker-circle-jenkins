@@ -119,7 +119,6 @@ def build_variant_from(template, variant, info, from_image=''):
 def build_variant(template, variant, parents):
     logging.debug('start building variant %s %s', template, variant)
 
-    logging.debug(parents)
     if (template, variant) in parents:
         logging.warning('skip recursion of variant %s %s', template, variant)
         return {}
@@ -191,8 +190,9 @@ for t in templates:
         images.extend(i)
 
 if arguments.push:
-    push_image(images)
+    for i in images:
+        push_image(i)
 
 logging.info('built %s images:', len(images))
-for image in images:
-    logging.info('  - %s', image)
+for i in images:
+    logging.info('  - %s', i)
