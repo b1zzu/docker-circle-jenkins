@@ -20,6 +20,4 @@ node:
     from:
       fedora:
         - "31"
-      gradle:
-        - "4"
     version: "10.16.2"
