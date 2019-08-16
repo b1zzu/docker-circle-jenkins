@@ -8,4 +8,4 @@ if [ ! -z "$CIRCLE_TAG" ]; then
     OPTIONS="$OPTIONS -v $CIRCLE_TAG -p"
 fi
 
-exec ./build.py $OPTIONS $1
+exec ./build.py $OPTIONS $@
